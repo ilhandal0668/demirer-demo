@@ -37,6 +37,10 @@
 	/* Hareket */
 	--ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 	--dur: 0.32s;
+
+	/* Logo yüksekliği ve üst/alt boşluğu — başlık yüksekliği bunlardan hesaplanır */
+	--logo-h: 78px;
+	--logo-bosluk: 14px;
 }
 
 /* --------------------------------------------------------------------------
@@ -383,18 +387,20 @@ h4, h5, h6 {
 	align-items: center;
 	justify-content: space-between;
 	gap: clamp(16px, 3vw, 40px);
-	min-height: 92px;
-	padding-block: 12px;
+	/* Yükseklik logodan gelir: logo + eşit üst/alt boşluk = dikeyde tam orta */
+	min-height: calc(var(--logo-h) + (var(--logo-bosluk) * 2));
+	padding-block: var(--logo-bosluk);
 }
 
-.d-logo { display: block; flex: none; }
+.d-logo { display: flex; align-items: center; flex: none; }
 .d-logo img {
+	display: block;
 	width: auto;
-	height: 64px;
+	height: var(--logo-h);
 	transition: height var(--dur) var(--ease);
 }
 /* Sayfa kaydırılınca başlık incelir, logo da orantılı küçülür */
-.d-header.is-stuck .d-logo img { height: 48px; }
+.d-header.is-stuck { --logo-h: 56px; }
 
 .d-nav > ul {
 	display: flex;
@@ -1537,8 +1543,9 @@ h4, h5, h6 {
 	.d-topbar a.d-topbar-mail,
 	.d-topbar .d-topbar-social,
 	.d-topbar .d-topbar-ayrac { display: none; }
-	.d-logo img { height: 54px; }
-	.d-header-in { min-height: 78px; }
+	/* Mobil logo boyutu korunuyor */
+	:root { --logo-h: 54px; --logo-bosluk: 12px; }
+	.d-header.is-stuck { --logo-h: 46px; }
 }
 
 @media print {
