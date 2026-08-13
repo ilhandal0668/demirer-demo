@@ -1554,86 +1554,6 @@ h4, h5, h6 {
 .d-hesap-sonuc .d-btn { justify-content: center; }
 
 /* --------------------------------------------------------------------------
-   16c. Projeden yapıya karşılaştırma sürgüsü
-   -------------------------------------------------------------------------- */
-.d-kiyas {
-	position: relative;
-	overflow: hidden;
-	background: var(--surface-2);
-	border: 1px solid var(--line);
-	touch-action: pan-y;
-	user-select: none;
-	cursor: ew-resize;
-}
-.d-kiyas img {
-	display: block;
-	width: 100%;
-	aspect-ratio: 16 / 10;
-	object-fit: cover;
-}
-.d-kiyas-ust {
-	position: absolute;
-	inset: 0;
-	clip-path: inset(0 calc(100% - var(--kiyas, 50%)) 0 0);
-}
-.d-kiyas-etiket {
-	position: absolute;
-	top: 14px;
-	padding: 6px 12px;
-	background: rgba(12, 29, 48, 0.86);
-	color: #fff;
-	font-family: var(--mono);
-	font-size: 0.68rem;
-	letter-spacing: 0.14em;
-	text-transform: uppercase;
-	pointer-events: none;
-}
-.d-kiyas-etiket--sol { left: 14px; }
-.d-kiyas-etiket--sag { right: 14px; }
-.d-kiyas-kol {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: var(--kiyas, 50%);
-	width: 44px;
-	margin-left: -22px;
-	padding: 0;
-	background: transparent;
-	border: 0;
-	cursor: ew-resize;
-	display: grid;
-	place-items: center;
-}
-.d-kiyas-kol::before {
-	content: "";
-	position: absolute;
-	top: 0; bottom: 0; left: 50%;
-	width: 2px;
-	margin-left: -1px;
-	background: var(--gold);
-}
-.d-kiyas-kol > span {
-	position: relative;
-	width: 42px; height: 42px;
-	border-radius: 50%;
-	background: var(--gold);
-	border: 2px solid #fff;
-	box-shadow: 0 4px 14px rgba(8, 21, 35, 0.35);
-}
-.d-kiyas-kol > span::before,
-.d-kiyas-kol > span::after {
-	content: "";
-	position: absolute;
-	top: 50%;
-	width: 0; height: 0;
-	border-block: 5px solid transparent;
-	transform: translateY(-50%);
-}
-.d-kiyas-kol > span::before { left: 9px; border-right: 7px solid var(--ink); }
-.d-kiyas-kol > span::after { right: 9px; border-left: 7px solid var(--ink); }
-.d-kiyas-kol:focus-visible > span { outline: 2px solid var(--ink); outline-offset: 3px; }
-
-/* --------------------------------------------------------------------------
    16d. Şakül — sayfa bölümleri göstergesi
    -------------------------------------------------------------------------- */
 .d-sakul {
@@ -1888,7 +1808,6 @@ h4, h5, h6 {
 	.d-topbar .d-topbar-social,
 	.d-topbar .d-topbar-ayrac { display: none; }
 	.d-hesap-girdi { grid-template-columns: minmax(0, 1fr); }
-	.d-kiyas img { aspect-ratio: 4 / 3; }
 	/* Mobil logo boyutu korunuyor */
 	:root { --logo-h: 54px; --logo-bosluk: 12px; }
 	.d-header.is-stuck { --logo-h: 46px; }

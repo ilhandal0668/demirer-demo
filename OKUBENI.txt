@@ -8,13 +8,13 @@ Site tarayıcınızda açılır; menüdeki tüm sayfalar çalışır.
 
 Neler çalışıyor
 ---------------
-- Tüm sayfalar, menü, proje galerileri, görsel büyütme, mobil görünüm.
+- Tüm sayfalar (Türkçe ve İngilizce), menü, proje galerileri, görsel büyütme,
+  kat karşılığı hesaplayıcı, mobil görünüm.
 
 Neler çalışmıyor (yalnızca bu tanıtım kopyasında)
 -------------------------------------------------
 - Form gönderimi kapalıdır. Yayına alınan sitede iletişim, fiyat teklifi ve
   e-bülten formları doğrudan yönetim paneline düşer.
-- Dil değiştirme (TR/EN) bu kopyada devre dışıdır.
 - Yönetim paneli bu kopyaya dahil değildir.
 
 Görseller ve metinler mevcut yönetim panelindeki gerçek içeriklerden alınmıştır.

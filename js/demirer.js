@@ -295,47 +295,6 @@
 		}
 	}
 
-	/* ------------------------------------- Projeden yapıya karşılaştırma */
-	var kiyas = $("[data-kiyas]");
-	if (kiyas) {
-		var kol = $("[data-kiyas-kol]", kiyas);
-		var suruyor = false;
-
-		var ayarla = function (yuzde) {
-			var v = Math.min(100, Math.max(0, yuzde));
-			kiyas.style.setProperty("--kiyas", v + "%");
-			if (kol) { kol.setAttribute("aria-valuenow", Math.round(v)); }
-		};
-
-		var konumdan = function (x) {
-			var r = kiyas.getBoundingClientRect();
-			ayarla(((x - r.left) / r.width) * 100);
-		};
-
-		kiyas.addEventListener("pointerdown", function (e) {
-			suruyor = true;
-			kiyas.setPointerCapture(e.pointerId);
-			konumdan(e.clientX);
-		});
-		kiyas.addEventListener("pointermove", function (e) {
-			if (suruyor) { konumdan(e.clientX); }
-		});
-		["pointerup", "pointercancel"].forEach(function (t) {
-			kiyas.addEventListener(t, function () { suruyor = false; });
-		});
-
-		if (kol) {
-			kol.addEventListener("keydown", function (e) {
-				var simdi = parseFloat(kol.getAttribute("aria-valuenow")) || 50;
-				var adim = e.shiftKey ? 10 : 4;
-				if (e.key === "ArrowLeft") { ayarla(simdi - adim); e.preventDefault(); }
-				if (e.key === "ArrowRight") { ayarla(simdi + adim); e.preventDefault(); }
-				if (e.key === "Home") { ayarla(0); e.preventDefault(); }
-				if (e.key === "End") { ayarla(100); e.preventDefault(); }
-			});
-		}
-	}
-
 	/* --------------------------------------------- Şakül: bölüm göstergesi */
 	var sakul = $("#sakul");
 	if (sakul && window.matchMedia("(min-width: 1400px)").matches) {
