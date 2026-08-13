@@ -142,7 +142,72 @@
 		<p>Hızlı ve kolay fiyat teklifi için aşağıdaki bilgileri doldurunuz...</p>	</div>
 </section>
 
-	<section class="d-band d-bg-paper">
+	<section class="d-band d-bg-ink on-dark" id="hesaplayici" aria-labelledby="d-hesap-baslik">
+	<div class="d-wrap">
+		<div class="d-head d-head--split">
+			<div class="d-head-text">
+				<span class="t-label">Arsa sahipleri için</span>
+				<h2 id="d-hesap-baslik" class="t-h2">Arsanızda ne çıkar?</h2>
+				<div class="d-head-rule"></div>
+				<p class="t-muted">Parselinizin büyüklüğünü ve imar emsalini girin; yaklaşık inşaat alanını ve size düşecek daire sayısını görün.</p>
+			</div>
+		</div>
+
+		<div class="d-hesap" data-hesap>
+			<div class="d-hesap-girdi">
+				<div class="d-field d-hesap-alan">
+					<label for="h-arsa">Arsa alanı <span class="d-hesap-birim">m²</span></label>
+					<input type="number" id="h-arsa" data-hesap-arsa value="500" min="100" max="20000" step="10" inputmode="numeric">
+				</div>
+
+				<div class="d-field d-hesap-alan">
+					<label for="h-emsal">İmar emsali (KAKS)</label>
+					<input type="number" id="h-emsal" data-hesap-emsal value="1.50" min="0.3" max="5" step="0.05" inputmode="decimal">
+					<span class="d-form-note">İmar durum belgenizde yazar. Bilmiyorsanız 1,50 ile deneyin.</span>
+				</div>
+
+				<div class="d-field d-hesap-alan">
+					<label for="h-daire">Ortalama daire büyüklüğü <span class="d-hesap-birim">m²</span></label>
+					<input type="number" id="h-daire" data-hesap-daire value="120" min="45" max="400" step="5" inputmode="numeric">
+				</div>
+
+				<div class="d-field d-hesap-alan d-hesap-alan--genis">
+					<label for="h-oran">Kat karşılığı oranınız <output class="d-hesap-oran" data-hesap-oran-yazi>45%</output></label>
+					<input type="range" id="h-oran" data-hesap-oran value="45" min="25" max="65" step="1">
+					<span class="d-form-note">Arsa sahibine düşen pay. Bölgeye ve projeye göre değişir.</span>
+				</div>
+			</div>
+
+			<dl class="d-hesap-sonuc">
+				<div class="d-hesap-satir">
+					<dt>Yaklaşık inşaat alanı</dt>
+					<dd class="t-num" data-hesap-toplam>750 m²</dd>
+				</div>
+				<div class="d-hesap-satir">
+					<dt>Yaklaşık daire sayısı</dt>
+					<dd class="t-num" data-hesap-adet>6</dd>
+				</div>
+				<div class="d-hesap-satir d-hesap-satir--one">
+					<dt>Size düşen</dt>
+					<dd class="t-num" data-hesap-pay>2 – 3 daire</dd>
+				</div>
+				<div class="d-hesap-satir">
+					<dt>Payınızın alanı</dt>
+					<dd class="t-num" data-hesap-payalan>338 m²</dd>
+				</div>
+
+				<p class="d-hesap-uyari">
+					<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5"/><path d="M12 7.8h.01"/></svg>					<span>Bu hesap yalnızca ön fikir verir, taahhüt değildir. Gerçek sayı; imar durumu, TAKS, çekme mesafeleri, kat adedi ve yürürlükteki yönetmeliklere göre değişir.</span>
+				</p>
+
+				<button type="button" class="d-btn" data-hesap-aktar>
+					Bu bilgilerle teklif isteyin <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 4v16"/><path d="m18 14-6 6-6-6"/></svg>				</button>
+			</dl>
+		</div>
+	</div>
+</section>
+
+	<section class="d-band d-bg-paper" id="teklif-formu">
 		<div class="d-wrap">
 			<div class="d-layout">
 				<div>
@@ -318,6 +383,12 @@
 		</div>
 	</div>
 </footer>
+
+<nav class="d-sakul" id="sakul" aria-label="Sayfa bölümleri" hidden>
+	<span class="d-sakul-ip" aria-hidden="true"></span>
+	<ol class="d-sakul-liste"></ol>
+	<span class="d-sakul-govde" aria-hidden="true"></span>
+</nav>
 
 <button type="button" class="d-top">
 	<span class="vh">Sayfa başına dön</span>

@@ -211,6 +211,208 @@
 		});
 	}
 
+	/* ------------------------------------------ Kat karşılığı hesaplayıcı */
+	var hesap = $("[data-hesap]");
+	if (hesap) {
+		var arsaEl = $("[data-hesap-arsa]", hesap);
+		var emsalEl = $("[data-hesap-emsal]", hesap);
+		var daireEl = $("[data-hesap-daire]", hesap);
+		var oranEl = $("[data-hesap-oran]", hesap);
+		var oranYazi = $("[data-hesap-oran-yazi]", hesap);
+		var toplamEl = $("[data-hesap-toplam]", hesap);
+		var adetEl = $("[data-hesap-adet]", hesap);
+		var payEl = $("[data-hesap-pay]", hesap);
+		var payAlanEl = $("[data-hesap-payalan]", hesap);
+		var aktarBtn = $("[data-hesap-aktar]", hesap);
+		var ingilizce = document.documentElement.lang === "en";
+
+		var bicim = function (sayi) {
+			return Math.round(sayi).toLocaleString(ingilizce ? "en-US" : "tr-TR");
+		};
+
+		var sayi = function (el, enAz, enCok, varsayilan) {
+			var v = parseFloat(String(el.value).replace(",", "."));
+			if (!isFinite(v)) { return varsayilan; }
+			return Math.min(enCok, Math.max(enAz, v));
+		};
+
+		var hesapla = function () {
+			var arsa = sayi(arsaEl, 1, 200000, 500);
+			var emsal = sayi(emsalEl, 0.1, 10, 1.5);
+			var daire = sayi(daireEl, 30, 600, 120);
+			var oran = sayi(oranEl, 0, 100, 45);
+
+			var toplam = arsa * emsal;
+			var adet = Math.floor(toplam / daire);
+			var payAlan = toplam * (oran / 100);
+			var payAdetAlt = Math.floor(adet * oran / 100);
+			var payAdetUst = Math.ceil(adet * oran / 100);
+
+			oranYazi.textContent = "%" + Math.round(oran);
+			toplamEl.textContent = bicim(toplam) + " m²";
+			adetEl.textContent = adet > 0 ? bicim(adet) : "—";
+			payAlanEl.textContent = bicim(payAlan) + " m²";
+
+			var birim = ingilizce ? " flats" : " daire";
+			if (adet <= 0) {
+				payEl.textContent = "—";
+			} else if (payAdetAlt === payAdetUst) {
+				payEl.textContent = payAdetAlt + birim;
+			} else {
+				payEl.textContent = payAdetAlt + " – " + payAdetUst + birim;
+			}
+		};
+
+		[arsaEl, emsalEl, daireEl, oranEl].forEach(function (el) {
+			if (el) { el.addEventListener("input", hesapla); }
+		});
+		hesapla();
+
+		// Sonuçları teklif formuna taşı
+		if (aktarBtn) {
+			aktarBtn.addEventListener("click", function () {
+				var konu = $("#konu");
+				var detay = $("#detay");
+				if (konu) {
+					konu.value = ingilizce ? "Revenue-share pre-assessment" : "Kat karşılığı ön değerlendirme";
+				}
+				if (detay) {
+					var satirlar = ingilizce
+						? ["Plot area: " + arsaEl.value + " m²", "Floor area ratio: " + emsalEl.value,
+						   "Average flat size: " + daireEl.value + " m²", "Requested share: %" + oranEl.value,
+						   "Estimated buildable area: " + toplamEl.textContent, "Estimated flats: " + adetEl.textContent,
+						   "My share: " + payEl.textContent + " (" + payAlanEl.textContent + ")"]
+						: ["Arsa alanı: " + arsaEl.value + " m²", "İmar emsali: " + emsalEl.value,
+						   "Ortalama daire: " + daireEl.value + " m²", "Beklenen pay: %" + oranEl.value,
+						   "Hesaplanan inşaat alanı: " + toplamEl.textContent, "Hesaplanan daire sayısı: " + adetEl.textContent,
+						   "Bana düşen: " + payEl.textContent + " (" + payAlanEl.textContent + ")"];
+					detay.value = satirlar.join("\n");
+				}
+				var hedef = $("#teklif-formu");
+				if (hedef) { hedef.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }); }
+				window.setTimeout(function () { if (detay) { detay.focus(); } }, reduce ? 0 : 600);
+			});
+		}
+	}
+
+	/* ------------------------------------- Projeden yapıya karşılaştırma */
+	var kiyas = $("[data-kiyas]");
+	if (kiyas) {
+		var kol = $("[data-kiyas-kol]", kiyas);
+		var suruyor = false;
+
+		var ayarla = function (yuzde) {
+			var v = Math.min(100, Math.max(0, yuzde));
+			kiyas.style.setProperty("--kiyas", v + "%");
+			if (kol) { kol.setAttribute("aria-valuenow", Math.round(v)); }
+		};
+
+		var konumdan = function (x) {
+			var r = kiyas.getBoundingClientRect();
+			ayarla(((x - r.left) / r.width) * 100);
+		};
+
+		kiyas.addEventListener("pointerdown", function (e) {
+			suruyor = true;
+			kiyas.setPointerCapture(e.pointerId);
+			konumdan(e.clientX);
+		});
+		kiyas.addEventListener("pointermove", function (e) {
+			if (suruyor) { konumdan(e.clientX); }
+		});
+		["pointerup", "pointercancel"].forEach(function (t) {
+			kiyas.addEventListener(t, function () { suruyor = false; });
+		});
+
+		if (kol) {
+			kol.addEventListener("keydown", function (e) {
+				var simdi = parseFloat(kol.getAttribute("aria-valuenow")) || 50;
+				var adim = e.shiftKey ? 10 : 4;
+				if (e.key === "ArrowLeft") { ayarla(simdi - adim); e.preventDefault(); }
+				if (e.key === "ArrowRight") { ayarla(simdi + adim); e.preventDefault(); }
+				if (e.key === "Home") { ayarla(0); e.preventDefault(); }
+				if (e.key === "End") { ayarla(100); e.preventDefault(); }
+			});
+		}
+	}
+
+	/* --------------------------------------------- Şakül: bölüm göstergesi */
+	var sakul = $("#sakul");
+	if (sakul && window.matchMedia("(min-width: 1400px)").matches) {
+		var ana = $("#main");
+		var bolumler = ana ? $$("section", ana).filter(function (b) {
+			var baslik = b.querySelector("h1, h2");
+			return baslik && baslik.textContent.trim().length > 1 && b.offsetHeight > 200;
+		}) : [];
+
+		if (bolumler.length > 1) {
+			var liste = $(".d-sakul-liste", sakul);
+			var govde = $(".d-sakul-govde", sakul);
+			var noktalar = [];
+
+			bolumler.forEach(function (bolum, i) {
+				var baslik = bolum.querySelector("h1, h2").textContent.trim();
+				var li = document.createElement("li");
+				var btn = document.createElement("button");
+				btn.type = "button";
+				btn.className = "d-sakul-nokta";
+				btn.innerHTML = '<span class="d-sakul-etiket"></span>';
+				btn.querySelector(".d-sakul-etiket").textContent = baslik.slice(0, 28);
+				btn.setAttribute("aria-label", baslik);
+				btn.addEventListener("click", function () {
+					bolum.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+				});
+				li.appendChild(btn);
+				liste.appendChild(li);
+				noktalar.push({ dugme: btn, bolum: bolum, li: li });
+			});
+
+			sakul.hidden = false;
+
+			var koyuMu = function (el) {
+				while (el && el !== document.body) {
+					if (el.classList && (el.classList.contains("d-bg-ink") || el.classList.contains("on-dark") ||
+						el.classList.contains("d-cta") || el.classList.contains("d-footer") ||
+						el.classList.contains("d-pagehead") || el.classList.contains("d-hero-figure"))) { return true; }
+					el = el.parentElement;
+				}
+				return false;
+			};
+
+			var bekliyor = false;
+			var guncelle = function () {
+				bekliyor = false;
+				var belge = document.documentElement;
+				var toplam = belge.scrollHeight - belge.clientHeight;
+				var oran = toplam > 0 ? Math.min(1, Math.max(0, window.scrollY / toplam)) : 0;
+				var kutu = sakul.getBoundingClientRect();
+
+				govde.style.top = (oran * kutu.height) + "px";
+				sakul.classList.toggle("is-visible", window.scrollY > 220);
+
+				// Noktaları belge içindeki konumlarına göre yerleştir
+				var belgeYuksekligi = belge.scrollHeight;
+				noktalar.forEach(function (n) {
+					var ust = n.bolum.getBoundingClientRect().top + window.scrollY;
+					n.li.style.top = Math.min(100, Math.max(0, (ust / belgeYuksekligi) * 100)) + "%";
+					var r = n.bolum.getBoundingClientRect();
+					n.dugme.classList.toggle("is-active", r.top <= belge.clientHeight * 0.4 && r.bottom > belge.clientHeight * 0.4);
+				});
+
+				// Arka plan koyuysa rengi tersine çevir
+				var arkadaki = document.elementFromPoint(kutu.left + kutu.width / 2, kutu.top + oran * kutu.height);
+				sakul.classList.toggle("is-koyu", koyuMu(arkadaki));
+			};
+
+			var istek = function () {
+				if (!bekliyor) { bekliyor = true; window.requestAnimationFrame(guncelle); }
+			};
+			window.addEventListener("scroll", istek, { passive: true });
+			window.addEventListener("resize", istek);
+			guncelle();
+		}
+	}
+
 	/* ---------------------------------------------------------- Klavye */
 	document.addEventListener("keydown", function (event) {
 		if (event.key !== "Escape") { return; }
