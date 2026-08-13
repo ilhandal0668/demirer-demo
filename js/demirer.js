@@ -6,6 +6,46 @@
 	var $ = function (sel, root) { return (root || document).querySelector(sel); };
 	var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
 
+	/* --------------------------------------- Ana sayfa videosu: hafif ve koşullu yükleme */
+	var heroVideo = $(".d-hero-video");
+	if (heroVideo) {
+		var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+		var slowConnection = connection && (/2g|3g/.test(connection.effectiveType || "") || connection.saveData);
+		var heroLoaded = false;
+
+		var loadHeroVideo = function () {
+			if (heroLoaded || reduce || slowConnection || !window.matchMedia("(min-width: 768px)").matches) { return; }
+			heroLoaded = true;
+			heroVideo.src = heroVideo.getAttribute("data-src");
+			heroVideo.load();
+			var playPromise = heroVideo.play();
+			if (playPromise && playPromise.catch) { playPromise.catch(function () {}); }
+		};
+
+		var queueHeroVideo = function () {
+			if ("requestIdleCallback" in window) {
+				window.requestIdleCallback(loadHeroVideo, { timeout: 1800 });
+			} else {
+				window.setTimeout(loadHeroVideo, 600);
+			}
+		};
+		if (document.readyState === "complete") { queueHeroVideo(); }
+		else { window.addEventListener("load", queueHeroVideo, { once: true }); }
+		window.addEventListener("resize", loadHeroVideo, { passive: true });
+
+		if ("IntersectionObserver" in window) {
+			new IntersectionObserver(function (entries) {
+				entries.forEach(function (entry) {
+					if (!heroLoaded) { return; }
+					if (entry.isIntersecting) {
+						var promise = heroVideo.play();
+						if (promise && promise.catch) { promise.catch(function () {}); }
+					} else { heroVideo.pause(); }
+				});
+			}, { threshold: 0.08 }).observe(heroVideo);
+		}
+	}
+
 	/* ---------------------------------------------------------- Üst bar */
 	var header = $(".d-header");
 	if (header) {

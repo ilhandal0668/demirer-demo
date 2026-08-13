@@ -566,7 +566,10 @@ h4, h5, h6 {
 	background: var(--ink);
 	overflow: hidden;
 }
-.d-hero-figure img {
+.d-hero-figure > a { display: block; }
+.d-hero-figure > a > img,
+.d-hero-video {
+	display: block;
 	width: 100%;
 	aspect-ratio: 21 / 9;
 	object-fit: cover;
@@ -642,6 +645,55 @@ h4, h5, h6 {
 .d-kunye dd { margin: 0; color: #fff; }
 .d-kunye-item { display: flex; align-items: baseline; gap: 10px; }
 .d-kunye-name { font-family: var(--display); font-size: 1rem; letter-spacing: 0.02em; font-weight: 600; }
+
+/* Proje hikâyesi — yapı sicilinden önce şantiyeye yakından bakış */
+.d-project-feature {
+	background: var(--ink);
+	color: #fff;
+	padding: clamp(48px, 7vw, 96px) 0;
+}
+.d-project-feature-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1.5fr) minmax(300px, 0.75fr);
+	align-items: stretch;
+}
+.d-project-feature-media {
+	position: relative;
+	margin: 0;
+	min-height: 420px;
+	overflow: hidden;
+}
+.d-project-feature-media img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.d-project-feature-media figcaption {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding: 38px 22px 18px;
+	background: linear-gradient(transparent, rgba(7, 20, 34, 0.84));
+	color: #fff;
+	font-family: var(--mono);
+	font-size: 0.72rem;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+}
+.d-project-feature-copy {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 20px;
+	padding: clamp(34px, 5vw, 72px);
+	background: #11263a;
+}
+.d-project-feature-copy .t-label { color: var(--gold); }
+.d-project-feature-copy .t-h2 { color: #fff; }
+.d-project-feature-copy p { color: #c5d0da; }
+.d-project-feature-copy .t-lead { color: #fff; }
+.d-project-feature-copy .d-link { align-self: flex-start; color: #fff; margin-top: 6px; }
 
 /* Sayısal şerit */
 .d-facts {
@@ -1746,6 +1798,8 @@ h4, h5, h6 {
 @media (max-width: 1100px) {
 	.d-layout,
 	.d-split { grid-template-columns: minmax(0, 1fr); }
+	.d-project-feature-grid { grid-template-columns: minmax(0, 1fr); }
+	.d-project-feature-media { min-height: 0; aspect-ratio: 16 / 9; }
 	.d-side { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 	.d-grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 	.d-contact-grid { grid-template-columns: minmax(0, 1fr); }
@@ -1757,7 +1811,8 @@ h4, h5, h6 {
 	.d-header-actions .d-btn { display: none; }
 	.d-burger { display: inline-flex; }
 	.d-hero-top { grid-template-columns: minmax(0, 1fr); align-items: start; }
-	.d-hero-figure img { aspect-ratio: 16 / 9; }
+	.d-hero-figure > a > img,
+	.d-hero-video { aspect-ratio: 16 / 9; }
 	.d-hero-cizim { aspect-ratio: 16 / 9; }
 	.d-cta-in { grid-template-columns: minmax(0, 1fr); }
 }
