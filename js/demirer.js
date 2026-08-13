@@ -348,6 +348,7 @@
 		if (bolumler.length > 1) {
 			var liste = $(".d-sakul-liste", sakul);
 			var govde = $(".d-sakul-govde", sakul);
+			var aktifYazi = $(".d-sakul-aktif", sakul);
 			var noktalar = [];
 
 			bolumler.forEach(function (bolum, i) {
@@ -364,7 +365,7 @@
 				});
 				li.appendChild(btn);
 				liste.appendChild(li);
-				noktalar.push({ dugme: btn, bolum: bolum, li: li });
+				noktalar.push({ dugme: btn, bolum: bolum, li: li, baslik: baslik.slice(0, 24) });
 			});
 
 			sakul.hidden = false;
@@ -396,7 +397,9 @@
 					var ust = n.bolum.getBoundingClientRect().top + window.scrollY;
 					n.li.style.top = Math.min(100, Math.max(0, (ust / belgeYuksekligi) * 100)) + "%";
 					var r = n.bolum.getBoundingClientRect();
-					n.dugme.classList.toggle("is-active", r.top <= belge.clientHeight * 0.4 && r.bottom > belge.clientHeight * 0.4);
+					var aktif = r.top <= belge.clientHeight * 0.4 && r.bottom > belge.clientHeight * 0.4;
+					n.dugme.classList.toggle("is-active", aktif);
+					if (aktif && aktifYazi) { aktifYazi.textContent = n.baslik; }
 				});
 
 				// Arka plan koyuysa rengi tersine çevir

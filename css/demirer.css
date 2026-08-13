@@ -1462,10 +1462,12 @@ h4, h5, h6 {
 	gap: clamp(24px, 4vw, 56px);
 	align-items: start;
 }
-.d-hesap-girdi { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.d-hesap-girdi { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 24px; }
 .d-hesap-alan--genis { grid-column: 1 / -1; }
-.d-hesap .d-field label { color: #9fb0c1; display: flex; align-items: baseline; gap: 8px; }
-.d-hesap-birim { color: #6b8095; }
+/* Yan yana alanlarda biri daha uzunsa diğerinin kutusu esnemesin */
+.d-hesap .d-field { align-content: start; }
+.d-hesap .d-field label { color: #9fb0c1; display: flex; align-items: baseline; gap: 8px; min-height: 1.2em; }
+.d-hesap-birim { color: #6b8095; text-transform: none; letter-spacing: 0.04em; }
 .d-hesap .d-field input[type="number"] {
 	background: rgba(255, 255, 255, 0.06);
 	border-color: rgba(255, 255, 255, 0.18);
@@ -1652,7 +1654,7 @@ h4, h5, h6 {
 	top: 0;
 	bottom: 0;
 	width: 1px;
-	background: rgba(12, 29, 48, 0.22);
+	background: rgba(12, 29, 48, 0.34);
 }
 .d-sakul-liste { position: absolute; inset: 0; }
 .d-sakul-liste li { position: absolute; left: 0; transform: translateY(-50%); }
@@ -1699,25 +1701,45 @@ h4, h5, h6 {
 .d-sakul-nokta:hover .d-sakul-etiket,
 .d-sakul-nokta:focus-visible .d-sakul-etiket { opacity: 1; transform: translateY(-50%) translateX(0); }
 
-/* Şakül gövdesi: kaydırma konumuna göre iner */
+/* Şakül gövdesi: kaydırma konumuna göre iner, yanında bulunduğunuz bölümün adı durur */
 .d-sakul-govde {
 	position: absolute;
 	left: 50%;
 	top: 0;
-	width: 11px;
-	height: 16px;
-	margin-left: -5.5px;
-	background: var(--gold-dk);
-	clip-path: polygon(50% 100%, 0 34%, 0 0, 100% 0, 100% 34%);
+	width: 13px;
+	height: 19px;
+	margin-left: -6.5px;
 	transition: top 0.12s linear;
 }
+/* Şakül biçimi ayrı katmanda: kırpma, yanındaki yazıyı etkilemesin */
+.d-sakul-govde::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: var(--gold-dk);
+	clip-path: polygon(50% 100%, 0 34%, 0 0, 100% 0, 100% 34%);
+}
+.d-sakul.is-koyu .d-sakul-govde::before { background: var(--gold-lt); }
+.d-sakul-aktif {
+	position: absolute;
+	left: 22px;
+	top: 2px;
+	white-space: nowrap;
+	font-family: var(--mono);
+	font-size: 0.62rem;
+	font-weight: 500;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--gold-dk);
+	pointer-events: none;
+}
+.d-sakul.is-koyu .d-sakul-aktif { color: var(--gold-lt); }
 
 /* Koyu zeminde ters renk */
 .d-sakul.is-koyu .d-sakul-ip { background: rgba(255, 255, 255, 0.28); }
 .d-sakul.is-koyu .d-sakul-nokta::before { background: rgba(255, 255, 255, 0.5); }
 .d-sakul.is-koyu .d-sakul-nokta:hover::before,
 .d-sakul.is-koyu .d-sakul-nokta.is-active::before { background: var(--gold-lt); }
-.d-sakul.is-koyu .d-sakul-govde { background: var(--gold-lt); }
 .d-sakul.is-koyu .d-sakul-etiket { color: #fff; background: rgba(12, 29, 48, 0.9); }
 
 @media (min-width: 1400px) {
