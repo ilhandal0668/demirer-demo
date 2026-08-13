@@ -574,6 +574,55 @@ h4, h5, h6 {
 	object-position: center 38%;
 }
 
+/* Açılış anı: ozalit çizim, zeminden yukarı doğru çözülüp gerçek yapıyı bırakır */
+.d-hero-cizim {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	/* Yalnızca görsel alanını kaplar; alttaki künye şeridi açıkta kalır */
+	aspect-ratio: 21 / 9;
+	z-index: 1;
+	pointer-events: none;
+	display: block;
+	opacity: 0;
+}
+.d-hero-cizim img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center 38%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.d-hero-cizim {
+		opacity: 1;
+		-webkit-mask-image: linear-gradient(to top, transparent 0 38%, #000 62% 100%);
+		mask-image: linear-gradient(to top, transparent 0 38%, #000 62% 100%);
+		-webkit-mask-size: 100% 260%;
+		mask-size: 100% 260%;
+		-webkit-mask-repeat: no-repeat;
+		mask-repeat: no-repeat;
+		-webkit-mask-position: 0% 0%;
+		mask-position: 0% 0%;
+		animation: d-cizim-coz 2.3s cubic-bezier(0.4, 0, 0.2, 1) 0.35s forwards;
+	}
+}
+
+@keyframes d-cizim-coz {
+	0% {
+		-webkit-mask-position: 0% 0%;
+		mask-position: 0% 0%;
+		opacity: 1;
+	}
+	88% { opacity: 1; }
+	100% {
+		-webkit-mask-position: 0% 100%;
+		mask-position: 0% 100%;
+		opacity: 0;
+	}
+}
+
 /* Künye — sitedeki her yapı görselinin kimliği */
 .d-kunye {
 	display: flex;
@@ -1496,6 +1545,7 @@ h4, h5, h6 {
 	.d-burger { display: inline-flex; }
 	.d-hero-top { grid-template-columns: minmax(0, 1fr); align-items: start; }
 	.d-hero-figure img { aspect-ratio: 16 / 9; }
+	.d-hero-cizim { aspect-ratio: 16 / 9; }
 	.d-cta-in { grid-template-columns: minmax(0, 1fr); }
 }
 
