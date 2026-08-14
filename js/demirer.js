@@ -9,17 +9,44 @@
 	/* --------------------------------------- Ana sayfa videosu: hafif ve koşullu yükleme */
 	var heroVideo = $(".d-hero-video");
 	if (heroVideo) {
+		var heroFigure = heroVideo.closest ? heroVideo.closest(".d-hero-figure") : null;
+		var heroButon = heroFigure ? heroFigure.querySelector("[data-video-oynat]") : null;
 		var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-		var slowConnection = connection && (/2g|3g/.test(connection.effectiveType || "") || connection.saveData);
+		// Yalnizca cok yavas baglantida ve veri tasarrufu acikken atlanir. Mobilde de oynar.
+		var effective = (connection && connection.effectiveType) || "";
+		var slowConnection = !!connection && (effective === "slow-2g" || effective === "2g" || connection.saveData === true);
 		var heroLoaded = false;
 
+		// Dar ekranda hafif surum, genis ekranda tam surum
+		var kaynakSec = function () {
+			var mobil = heroVideo.getAttribute("data-src-mobil");
+			var darEkran = window.matchMedia("(max-width: 767px)").matches;
+			return (darEkran && mobil) ? mobil : heroVideo.getAttribute("data-src");
+		};
+
+		var butonGoster = function (goster) {
+			if (heroFigure) { heroFigure.classList.toggle("video-elle", !!goster); }
+		};
+
+		// iOS dusuk guc modunda otomatik oynatma reddedilir; o durumda dugme gosterilir.
+		var oynatmayiDene = function () {
+			var sonuc = heroVideo.play();
+			if (sonuc && sonuc.then) {
+				sonuc.then(function () { butonGoster(false); })
+				     .catch(function () { butonGoster(true); });
+			}
+		};
+
 		var loadHeroVideo = function () {
-			if (heroLoaded || reduce || slowConnection || !window.matchMedia("(min-width: 768px)").matches) { return; }
+			if (heroLoaded || reduce || slowConnection) { return; }
 			heroLoaded = true;
-			heroVideo.src = heroVideo.getAttribute("data-src");
+			// iOS icin sessizlik hem oznitelik hem ozellik olarak ayarli olmali
+			heroVideo.muted = true;
+			heroVideo.setAttribute("muted", "");
+			heroVideo.setAttribute("playsinline", "");
+			heroVideo.src = kaynakSec();
 			heroVideo.load();
-			var playPromise = heroVideo.play();
-			if (playPromise && playPromise.catch) { playPromise.catch(function () {}); }
+			oynatmayiDene();
 		};
 
 		var queueHeroVideo = function () {
@@ -31,16 +58,31 @@
 		};
 		if (document.readyState === "complete") { queueHeroVideo(); }
 		else { window.addEventListener("load", queueHeroVideo, { once: true }); }
-		window.addEventListener("resize", loadHeroVideo, { passive: true });
+
+		// Ilk dokunus/tiklama: otomatik oynatma engellendiyse kullanici hareketi cozer
+		var ilkTemas = function () {
+			loadHeroVideo();
+			if (heroLoaded && heroVideo.paused) { oynatmayiDene(); }
+		};
+		["touchstart", "click", "keydown"].forEach(function (olay) {
+			window.addEventListener(olay, ilkTemas, { once: true, passive: true });
+		});
+
+		if (heroButon) {
+			heroButon.addEventListener("click", function (olay) {
+				olay.preventDefault();
+				olay.stopPropagation();
+				loadHeroVideo();
+				oynatmayiDene();
+			});
+		}
 
 		if ("IntersectionObserver" in window) {
-			new IntersectionObserver(function (entries) {
-				entries.forEach(function (entry) {
+			new IntersectionObserver(function (girisler) {
+				girisler.forEach(function (giris) {
 					if (!heroLoaded) { return; }
-					if (entry.isIntersecting) {
-						var promise = heroVideo.play();
-						if (promise && promise.catch) { promise.catch(function () {}); }
-					} else { heroVideo.pause(); }
+					if (giris.isIntersecting) { oynatmayiDene(); }
+					else { heroVideo.pause(); }
 				});
 			}, { threshold: 0.08 }).observe(heroVideo);
 		}

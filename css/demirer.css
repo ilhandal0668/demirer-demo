@@ -626,6 +626,38 @@ h4, h5, h6 {
 	}
 }
 
+
+/* Otomatik oynatma engellenirse (ornegin iOS dusuk guc modu) cikan dugme */
+.d-video-oynat {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 3;
+	display: none;
+	align-items: center;
+	gap: 10px;
+	padding: 14px 22px;
+	background: rgba(12, 29, 48, 0.88);
+	color: #fff;
+	border: 1px solid rgba(255, 255, 255, 0.35);
+	border-radius: 999px;
+	font-family: var(--mono);
+	font-size: 0.74rem;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	cursor: pointer;
+	backdrop-filter: blur(4px);
+}
+.d-hero-figure.video-elle .d-video-oynat { display: inline-flex; }
+.d-video-ikon {
+	width: 0;
+	height: 0;
+	border-top: 7px solid transparent;
+	border-bottom: 7px solid transparent;
+	border-left: 12px solid var(--gold-lt);
+}
+
 /* Künye — sitedeki her yapı görselinin kimliği */
 .d-kunye {
 	display: flex;
